@@ -1,5 +1,5 @@
 const selectedSeance = JSON.parse(localStorage.getItem("selectedSeance"));
-const timestamp = selectedSeance.timestamp / 1000;
+const timestamp = Math.floor(selectedSeance.timestamp / 1000);
 const hallId = selectedSeance.hallId;
 const seanceId = selectedSeance.seanceId;
 const button = document.querySelector(".acceptin-button");

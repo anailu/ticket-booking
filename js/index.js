@@ -59,7 +59,7 @@ function populate(pageData, date) {
     if (!foundHall) {
       hallWithSeances.push([seance]);
     }
-  }
+    }
 
     hallWithSeances.sort(function(a, b) {
       const hallA = halls.find(function(hall) {
@@ -108,19 +108,17 @@ function populate(pageData, date) {
         const seanceTime = seance.seance_start; //в минутах
         const priceStandart = hall.hall_price_standart;
         const priceVip = hall.hall_price_vip;
-
-        const seanceTimestamp = seanceTime * 60 * 1000;
-        const now = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-        const secondsSinceStartOfDay = Math.floor(today - now);
-        
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+        const seanceTimestamp = startOfDay.getTime() + (seanceTime * 60 * 1000);
+        const time = Date.now();
         let isPast;
-        console.log("date: " + date, "today: " + today);
 
-        const options = { month: "short", day: "numeric" };
+        const options = { month: "short", day: "numeric" }
         const formattedDate = date.toLocaleString("en-US", options);
         const formatedToday = today.toLocaleString("en-US", options);
 
-        if (formattedDate == formatedToday && seanceTimestamp < secondsSinceStartOfDay) {
+        if (formattedDate == formatedToday && seanceTimestamp < time) {
           isPast = true;
         } else {
           isPast = false;
@@ -160,7 +158,7 @@ function populate(pageData, date) {
       `;
     }
 
-    return hallHTML;
+    return hallHTML
   }
 
   document.addEventListener("click", function(event) {
@@ -179,8 +177,6 @@ function populate(pageData, date) {
       const hallConfig = event.target.dataset.hallConfig;
       const hallPlaces= event.target.dataset.hallPlaces;
       const hallRows = event.target.dataset.hallRows;
-
-      console.log(hallConfig);
   
       if (!isPast) {
         const selectedSeance = {
@@ -241,6 +237,7 @@ function updateWeekNav() {
 
     dayWeek.textContent = daysOfWeek[dayOfWeek];
     dayNumber.textContent = day.getDate();
+    navLink.setAttribute("data-timestamp", day.getTime()); //
   }
 }
 
@@ -253,12 +250,12 @@ navLinks.forEach((navElement, index) => {
     });
 
     navElement.classList.add("page-nav__day_chosen");
-    const selectedDate = new Date();
-    selectedDate.setDate(selectedDate.getDate() + index);
-
+    const selectedTimestamp = parseInt(navElement.getAttribute("data-timestamp")); 
+    const selectedDate = new Date(selectedTimestamp);
+    
     navElement.setAttribute("data-date", selectedDate);
-
+    //console.log("selectedDate " + selectedDate)
     mainElement.innerHTML = "";
-    populate(pageData, selectedDate);
-  })
+    populate(pageData, selectedDate)
+    })
 });
