@@ -65,23 +65,24 @@ function populate(pageData, date) {
       const hallA = halls.find(function(hall) {
         return hall.hall_id === a[0].seance_hallid;
       });
+
       const hallB = halls.find(function(hall) {
         return hall.hall_id === b[0].seance_hallid;
       });
-  
-      //if (hallA && hallB) { //проверка, если холл отсортировался
-        const hallNameA = hallA.hall_name.toUpperCase();
-        const hallNameB = hallB.hall_name.toUpperCase();
-  
-        if (hallNameA < hallNameB) {
-          return -1;
-        }
-        if (hallNameA > hallNameB) {
-          return 1;
-        }
-       else {
+
+      const hallNameA = hallA.hall_name.toUpperCase();
+      const hallNameB = hallB.hall_name.toUpperCase();
+
+      if (hallNameA < hallNameB) {
+        return -1;
+      }
+
+      if (hallNameA > hallNameB) {
+        return 1;
+      }
+      else {
         return 0;
-       }
+      }
     });
     
     let hallHTML = "";
@@ -105,7 +106,7 @@ function populate(pageData, date) {
 
       for (const seance of seancesForHall) {
         const seanceTimeString = seance.seance_time;
-        const seanceTime = seance.seance_start; //в минутах
+        const seanceTime = seance.seance_start;
         const priceStandart = hall.hall_price_standart;
         const priceVip = hall.hall_price_vip;
         const startOfDay = new Date(date);
@@ -252,9 +253,8 @@ navLinks.forEach((navElement, index) => {
     navElement.classList.add("page-nav__day_chosen");
     const selectedTimestamp = parseInt(navElement.getAttribute("data-timestamp")); 
     const selectedDate = new Date(selectedTimestamp);
-    
+
     navElement.setAttribute("data-date", selectedDate);
-    //console.log("selectedDate " + selectedDate)
     mainElement.innerHTML = "";
     populate(pageData, selectedDate)
     })

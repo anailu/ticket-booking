@@ -17,4 +17,3 @@ async function fetchData(requestBody, callback) {
       console.error("Ошибка:", error);
     }
 }
-

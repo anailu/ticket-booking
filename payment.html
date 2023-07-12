@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&amp;subset=cyrillic,cyrillic-ext,latin-ext" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <script src="js/fetchData.js"></script>
   <script src="js/payment.js" defer></script>
 </head>
 
@@ -27,13 +28,13 @@
         </header>
         
         <div class="ticket__info-wrapper">
-          <p class="ticket__info">На фильм: <span class="ticket__details ticket__title">Звёздные войны XXIII: Атака клонированных клонов</span></p>
-          <p class="ticket__info">Ряд/Место: <span class="ticket__details ticket__chairs">6/7, 6/8</span></p>
-          <p class="ticket__info">В зале: <span class="ticket__details ticket__hall">1</span></p>
-          <p class="ticket__info">Начало сеанса: <span class="ticket__details ticket__start">18:30</span></p>
-          <p class="ticket__info">Стоимость: <span class="ticket__details ticket__cost">600</span> рублей</p>
+          <p class="ticket__info">На фильм: <span class="ticket__details ticket__title"></span></p>
+          <p class="ticket__info">Ряд/Место: <span class="ticket__details ticket__chairs"></span></p>
+          <p class="ticket__info">В зале: <span class="ticket__details ticket__hall"></span></p>
+          <p class="ticket__info">Начало сеанса: <span class="ticket__details ticket__start"></span></p>
+          <p class="ticket__info">Стоимость: <span class="ticket__details ticket__cost"></span> рублей</p>
 
-          <button class="acceptin-button" onclick="location.href='ticket.html'" >Получить код бронирования</button>
+          <button class="acceptin-button">Получить код бронирования</button>
 
           <p class="ticket__hint">После оплаты билет будет доступен в этом окне, а также придёт вам на почту. Покажите QR-код нашему контроллёру у входа в зал.</p>
           <p class="ticket__hint">Приятного просмотра!</p>

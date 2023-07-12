@@ -1,5 +1,6 @@
 const selectedSeance = JSON.parse(localStorage.getItem("selectedSeance"));
 const timestamp = Math.floor(selectedSeance.timestamp / 1000);
+const hallConfig = decodeURIComponent(selectedSeance.hallConfig);
 const hallId = selectedSeance.hallId;
 const seanceId = selectedSeance.seanceId;
 const button = document.querySelector(".acceptin-button");
@@ -30,6 +31,8 @@ function populate(data) {
     }
 }
 
+const selectedSeats = [];
+
 document.addEventListener("click", function(event) {
     const target = event.target;
     if (event.target.classList.contains("conf-step__chair") && !event.target.classList.contains("conf-step__chair_taken")) {
@@ -50,28 +53,50 @@ document.addEventListener("click", function(event) {
         const rowIndex = Array.from(row.parentNode.children).indexOf(row) + 1;
         const seatIndex = Array.from(row.children).indexOf(chair) + 1;
 
-        console.log("ряд", rowIndex, "место", seatIndex);
+        const seat = {
+            rowIndex: rowIndex,
+            seatIndex: seatIndex,
+            price: price
+        };
 
-        selectedSeance.rowIndex = rowIndex;
-        selectedSeance.seatIndex = seatIndex;
-        selectedSeance.price = price;
-        chair.classList.toggle("conf-step__chair_selected");
+        const index = selectedSeats.findIndex((s) => s.rowIndex === rowIndex && s.seatIndex === seatIndex);
+        if (index > -1) {
+            selectedSeats.splice(index, 1);
+            chair.classList.remove("conf-step__chair_selected");
+        } else {
+            selectedSeats.push(seat);
+            chair.classList.add("conf-step__chair_selected");
+        }
 
-        if (selectedSeance.rowIndex && selectedSeance.seatIndex) {
+        if (selectedSeats.length > 0) {
             button.disabled = false;
             button.classList.remove("disabled");
+        } else {
+            button.disabled = true;
+            button.classList.add("disabled");
         }
-    } 
-})
+    }
+});
 
 button.addEventListener("click", function() {
-    if (selectedSeance.rowIndex && selectedSeance.seatIndex) {
-        const updatedSelectedSeance = JSON.stringify(selectedSeance);
-        localStorage.setItem("selectedSeance", updatedSelectedSeance);
+    if (selectedSeats.length > 0) {
+        const container = document.querySelector(".conf-step__wrapper");
 
-        window.location.href = 'payment.html';
-    } else {
-        console.log("Выберите место перед продолжением");
+        selectedSeats.forEach((seat) => {
+            const row = container.querySelector(`.conf-step__row:nth-child(${seat.rowIndex})`);
+            const chair = row.querySelector(`.conf-step__chair:nth-child(${seat.seatIndex})`);
+
+            chair.classList.add("conf-step__chair_taken");
+            chair.classList.remove("conf-step__chair_selected");
+        });
+
+        const updatedHallConfig = container.innerHTML;
+        const encodedHallConfig = encodeURIComponent(updatedHallConfig);
+        selectedSeance.hallConfig = encodedHallConfig;
+        localStorage.setItem("selectedSeance", JSON.stringify(selectedSeance));
+        localStorage.setItem("selectedSeats", JSON.stringify(selectedSeats));
+
+        window.location.href = "payment.html";
     }
 });
 
