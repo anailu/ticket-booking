@@ -6,6 +6,8 @@ const hallId = updatedSelectedSeance.hallId;
 const seanceId = updatedSelectedSeance.seanceId;
 const button = document.querySelector(".acceptin-button");
 
+console.log(hallConfig);
+
 function ticketDetails() {
     const ticketInfoWrapper = document.querySelector(".ticket__info-wrapper");
     const ticketTitle = ticketInfoWrapper.querySelector(".ticket__title");

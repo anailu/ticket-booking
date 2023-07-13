@@ -12,6 +12,10 @@ function populate(pageData, date) {
   const seances = pageData.seances.result;
   const films = pageData.films.result;
 
+  const openHalls = halls.filter(function(hall) {
+    return hall.hall_open === "1";
+  });
+
   for (const film of films) {
     const movieContainer = document.createElement("section");
     movieContainer.classList.add("movie");
@@ -47,31 +51,37 @@ function populate(pageData, date) {
     for (const seance of listSeances) {
       const hallid = seance.seance_hallid;
       let foundHall = false;
-
-      for (const hallSeances of hallWithSeances) {
-      if (hallSeances[0].seance_hallid === hallid) {
-        hallSeances.push(seance);
-        foundHall = true;
-        break;
+  
+      const hall = openHalls.find(function(hall) {
+        return hall.hall_id === hallid && hall.hall_open === "1";
+      });
+    
+      if (hall) {
+        for (const hallSeances of hallWithSeances) {
+          if (hallSeances[0].seance_hallid === hallid) {
+            hallSeances.push(seance);
+            foundHall = true;
+            break;
+          }
+        }
+    
+        if (!foundHall) {
+          hallWithSeances.push([seance]);
+        }
       }
     }
 
-    if (!foundHall) {
-      hallWithSeances.push([seance]);
-    }
-    }
-
     hallWithSeances.sort(function(a, b) {
-      const hallA = halls.find(function(hall) {
+      const hallA = openHalls.find(function(hall) {
         return hall.hall_id === a[0].seance_hallid;
       });
 
-      const hallB = halls.find(function(hall) {
+      const hallB = openHalls.find(function(hall) {
         return hall.hall_id === b[0].seance_hallid;
       });
 
-      const hallNameA = hallA.hall_name.toUpperCase();
-      const hallNameB = hallB.hall_name.toUpperCase();
+      const hallNameA = hallA ? hallA.hall_name.toUpperCase() : "";
+      const hallNameB = hallB ? hallB.hall_name.toUpperCase() : "";
 
       if (hallNameA < hallNameB) {
         return -1;
@@ -91,15 +101,15 @@ function populate(pageData, date) {
       const hallId = hallSeances[0].seance_hallid;
       let hall = null;
   
-      for (const hallCurrent of halls) {
+      for (const hallCurrent of openHalls) {
         if (hallCurrent.hall_id === hallId) {
           hall = hallCurrent;
           break;
         }
       }
 
-      const hallNumber = hall.hall_name.replace("Зал", "").trim();
-      const hallName = `Зал ${hallNumber}`;
+      const hallNumber = hall ? hall.hall_name.replace("Зал", "").trim() : "";
+      const hallName = hall ? `Зал ${hallNumber}` : "";
       const seancesForHall = hallSeances;
 
       let seancesHTML = "";
@@ -107,8 +117,8 @@ function populate(pageData, date) {
       for (const seance of seancesForHall) {
         const seanceTimeString = seance.seance_time;
         const seanceTime = seance.seance_start;
-        const priceStandart = hall.hall_price_standart;
-        const priceVip = hall.hall_price_vip;
+        const priceStandart = hall ? hall.hall_price_standart : "";
+        const priceVip = hall ? hall.hall_price_vip : "";
         const startOfDay = new Date(date);
         startOfDay.setHours(0, 0, 0, 0);
         const seanceTimestamp = startOfDay.getTime() + (seanceTime * 60 * 1000);
@@ -131,12 +141,12 @@ function populate(pageData, date) {
           data-hallName="${hallName}"
           data-price-standart="${priceStandart}" 
           data-price-vip="${priceVip}"
-          data-hall-id="${hall.hall_id}"
+          data-hall-id="${hall ? hall.hall_id : ''}"
           data-seance-id="${seance.seance_id}"
           data-timestamp="${seanceTimestamp}"
-          data-hall-config="${encodeURIComponent(hall.hall_config)}"
-          data-hall-places="${hall.hall_places}"
-          data-hall-rows="${hall.hall_rows}"
+          data-hall-config="${hall ? encodeURIComponent(hall.hall_config) : ''}"
+          data-hall-places="${hall ? hall.hall_places : ''}"
+          data-hall-rows="${hall ? hall.hall_rows : ''}"
         `;
         
         seancesHTML += `
