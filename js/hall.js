@@ -17,6 +17,7 @@ function populate(data) {
     const hallElement = document.querySelector(".buying__info-hall");
     const priceElement = document.querySelector(".price-standart");
     const priceVipElement = document.querySelector(".price-vip");
+    const container = document.querySelector(".conf-step__wrapper");
     
     titleElement.textContent = selectedSeance.film;
     startElement.textContent = "Начало сеанса: " + selectedSeance.time;
@@ -26,8 +27,9 @@ function populate(data) {
 
     if (data === null) {
         const hallConfig = decodeURIComponent(selectedSeance.hallConfig);
-        const container = document.querySelector(".conf-step__wrapper");
         container.innerHTML = hallConfig;
+    } else {
+        container.innerHTML = data;
     }
 }
 
